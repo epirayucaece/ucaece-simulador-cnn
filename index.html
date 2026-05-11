@@ -100,15 +100,15 @@
                         <div class="activation-map" id="pool-windows"></div>
                     </div>
                     <div id="layer-flatten" class="layer-box">
-                        <h4>Flatten</h4>
+                        <h4 class="tip-title">Flatten</h4>
                         <div id="flatten-values"></div>
                     </div>
                     <div id="layer-dense1" class="layer-box">
-                        <h4>Densa + ReLU + Dropout</h4>
+                        <h4 class="tip-title">Densa + ReLU + Dropout</h4>
                         <div id="dense1-values"></div>
                     </div>
                     <div id="layer-output" class="layer-box">
-                        <h4>Softmax (4 clases)</h4>
+                        <h4 class="tip-title">Softmax (4 clases)</h4>
                         <div id="output-values"></div>
                     </div>
                 </div>
@@ -118,6 +118,74 @@
             </div>
         </section>
     </main>
+
+    <!-- Tooltip Flatten -->
+    <div id="flatten-tooltip" class="info-tooltip">
+        <h3>¿Qué hace el Flatten?</h3>
+        <p>Transforma el tensor tridimensional de salida del MaxPooling en un
+        <strong>vector unidimensional</strong>, simplemente desenrollando todos sus
+        valores en secuencia.</p>
+        <div class="tooltip-formula">[ 3 × 3 × N_filtros ] → [ 9 · N_filtros valores ]</div>
+        <p>Con 4&nbsp;filtros: 3×3×4 = <strong>36 valores</strong> en un único vector.</p>
+
+        <h3>¿Por qué es necesario?</h3>
+        <p>Las capas densas operan sobre vectores 1D, no sobre tensores.
+        El Flatten es el <em>puente</em> entre la parte convolucional
+        (que detecta patrones espaciales) y la parte clasificadora.</p>
+
+        <div class="tooltip-note">
+            No hay pesos aprendibles: es una operación de
+            <strong>reorganización pura</strong>, sin ningún cálculo matemático.
+        </div>
+    </div>
+
+    <!-- Tooltip Dense + ReLU + Dropout -->
+    <div id="dense-tooltip" class="info-tooltip">
+        <h3>Capa Densa (Fully Connected)</h3>
+        <p>Calcula una <strong>combinación lineal</strong> de todas las entradas
+        con sus pesos aprendibles:</p>
+        <div class="tooltip-formula">z = W · x + b</div>
+        <p>Donde <em>W</em> es la matriz de pesos (36&nbsp;entradas ×
+        10&nbsp;neuronas) y <em>b</em> el vector de sesgo.</p>
+
+        <h3>Activación ReLU</h3>
+        <p>Introduce <strong>no linealidad</strong> tras la combinación lineal:</p>
+        <div class="tooltip-formula">f(z) = max(0, z)</div>
+        <p>Las neuronas con activación negativa se "apagan" (valor 0). Sin ReLU,
+        apilar capas densas sería equivalente a una sola capa.</p>
+
+        <h3>Dropout (regularización)</h3>
+        <p>Durante el entrenamiento, desactiva neuronas aleatoriamente con
+        probabilidad <em>(1&nbsp;−&nbsp;keep_prob)</em>. Esto evita que la red
+        dependa de neuronas concretas, reduciendo el <strong>sobreajuste</strong>.</p>
+
+        <div class="tooltip-note">
+            En inferencia, Dropout está <strong>desactivado</strong> y
+            todos los pesos se usan completos.
+        </div>
+    </div>
+
+    <!-- Tooltip Softmax -->
+    <div id="output-tooltip" class="info-tooltip">
+        <h3>¿Qué hace Softmax?</h3>
+        <p>Convierte el vector de scores en <strong>probabilidades</strong> que
+        suman exactamente 1, una por cada clase:</p>
+        <div class="tooltip-formula">P(i) = exp(z&#x1D62;) / &sum; exp(z&#x2C7C;)</div>
+        <p>La exponencial amplifica diferencias: un score ligeramente mayor se
+        convierte en una probabilidad dominante.</p>
+
+        <h3>¿Cómo se decide la clase?</h3>
+        <p>La predicción es la clase con mayor probabilidad:</p>
+        <div class="tooltip-formula">ŷ = argmax P(clase i)</div>
+
+        <h3>Función de pérdida asociada</h3>
+        <p>Se usa <strong>cross-entropy</strong>:</p>
+        <div class="tooltip-formula">L = −log( P(clase correcta) )</div>
+        <p>El gradiente combinado Softmax&nbsp;+&nbsp;cross-entropy tiene
+        una forma muy limpia: <em>probabilidad_predicha&nbsp;−&nbsp;1</em>
+        para la clase correcta, y solo <em>probabilidad_predicha</em>
+        para las demás.</p>
+    </div>
 
     <!-- Tooltip MaxPooling -->
     <div id="pool-tooltip">

@@ -327,6 +327,66 @@ button:active { transform: scale(0.98); }
     border-radius: 4px;
 }
 
+/* === TOOLTIPS CAPAS (base compartida) === */
+
+.info-tooltip {
+    position: fixed;
+    z-index: 9999;
+    max-width: 320px;
+    background: #ffffff;
+    border: 1px solid #dce3ea;
+    border-left-width: 4px;
+    border-radius: 10px;
+    padding: 1rem 1.1rem 0.9rem;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.info-tooltip.visible { opacity: 1; }
+
+.info-tooltip h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #e8ecf0;
+    letter-spacing: 0.01em;
+}
+
+.info-tooltip h3 + h3,
+.info-tooltip p + h3 { margin-top: 0.75rem; }
+
+.info-tooltip p       { margin: 0 0 0.35rem 0; color: #37474f; }
+.info-tooltip ul      { margin: 0.15rem 0 0.35rem 0; padding-left: 1.1rem; color: #37474f; }
+.info-tooltip li      { margin-bottom: 0.2rem; }
+.info-tooltip strong  { color: #2c3e50; }
+
+/* Acentos por capa */
+#flatten-tooltip { border-left-color: #8e44ad; }
+#flatten-tooltip h3 { color: #8e44ad; }
+
+#dense-tooltip { border-left-color: #e67e22; }
+#dense-tooltip h3 { color: #e67e22; }
+
+#output-tooltip { border-left-color: var(--accent); }
+#output-tooltip h3 { color: var(--accent); }
+
+/* Indicador visual en títulos con tooltip */
+.layer-box .tip-title {
+    cursor: help;
+    text-decoration: underline dotted;
+    text-decoration-color: #b0bec5;
+    text-underline-offset: 3px;
+}
+
+.layer-box .tip-title:hover { text-decoration-color: currentColor; }
+
 /* === TOOLTIP MAXPOOLING === */
 
 #pool-tooltip {

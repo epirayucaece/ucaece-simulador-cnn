@@ -43,6 +43,19 @@ const UI = (function () {
         poolBox.addEventListener('mouseleave', () => poolTip.classList.remove('visible'));
         poolBox.addEventListener('mousemove',  e => _positionTooltip(poolTip, e));
 
+        // Tooltips en títulos de Flatten, Dense y Softmax
+        [
+            { selector: '#layer-flatten h4', tipId: 'flatten-tooltip' },
+            { selector: '#layer-dense1  h4', tipId: 'dense-tooltip'   },
+            { selector: '#layer-output  h4', tipId: 'output-tooltip'  },
+        ].forEach(({ selector, tipId }) => {
+            const el  = document.querySelector(selector);
+            const tip = document.getElementById(tipId);
+            el.addEventListener('mouseenter', () => tip.classList.add('visible'));
+            el.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+            el.addEventListener('mousemove',  e => _positionTooltip(tip, e));
+        });
+
         document.getElementById('lr').addEventListener('input',
             e => document.getElementById('lr-value').textContent = e.target.value);
         document.getElementById('epochs').addEventListener('input',
