@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación CNN - Cátedra de Sistemas Inteligentes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Red Neuronal Convolucional para Visión Artificial</h1>
+        <p class="subtitle">Simulación interactiva paso a paso</p>
+    </header>
+
+    <main>
+        <section id="control-panel">
+            <h2>Parámetros de entrenamiento</h2>
+            <div class="param-group">
+                <label for="lr">Tasa de aprendizaje:</label>
+                <input type="range" id="lr" min="0.001" max="0.1" step="0.001" value="0.01">
+                <span id="lr-value">0.01</span>
+            </div>
+            <div class="param-group">
+                <label for="epochs">Épocas:</label>
+                <input type="range" id="epochs" min="1" max="20" step="1" value="5">
+                <span id="epochs-value">5</span>
+            </div>
+            <div class="param-group">
+                <label for="batch-size">Tamaño de lote:</label>
+                <input type="range" id="batch-size" min="2" max="16" step="2" value="8">
+                <span id="batch-size-value">8</span>
+            </div>
+            <div class="param-group">
+                <label for="dropout">Dropout (keep prob):</label>
+                <input type="range" id="dropout" min="0.2" max="1" step="0.1" value="0.8">
+                <span id="dropout-value">0.8</span>
+            </div>
+            <div class="param-group">
+                <label for="filters">Filtros conv:</label>
+                <select id="filters">
+                    <option value="2">2</option>
+                    <option value="4" selected>4</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button id="btn-step">Siguiente paso</button>
+                <button id="btn-epoch">Ejecutar 1 época</button>
+                <button id="btn-run">Ejecutar todas</button>
+                <button id="btn-reset">Reiniciar</button>
+            </div>
+            <section id="download-section" style="display:none;">
+                <button id="btn-download">Descargar explicación</button>
+            </section>
+        </section>
+
+        <section id="visualization">
+            <h2 id="step-description">Bienvenido. Presiona "Siguiente paso" para comenzar.</h2>
+            <div id="arch-diagram"></div>
+            <div class="viz-middle">
+                <div id="data-display">
+                    <h3>Dataset sintético</h3>
+                    <div id="dataset-grid" class="grid-container"></div>
+                    <div id="batch-highlight" class="batch-info"></div>
+                </div>
+                <div id="training-stats">
+                    <h3>Estadísticas de entrenamiento</h3>
+                    <p>Pérdida actual: <span id="loss-value">---</span></p>
+                    <p>Precisión en prueba: <span id="test-acc">---</span></p>
+                    <p>Época actual: <span id="current-epoch">0</span></p>
+                    <div id="loss-plot"></div>
+                </div>
+            </div>
+            <div id="network-viz">
+                <!-- Vista de capas (activa durante entrenamiento) -->
+                <div id="layers-view">
+                    <div id="layer-input" class="layer-box">
+                        <h4>Entrada (8×8)</h4>
+                        <div class="activation-map" id="input-map"></div>
+                    </div>
+                    <div id="layer-conv" class="layer-box">
+                        <h4>Conv (pre-ReLU)</h4>
+                        <div class="activation-map" id="conv-map"></div>
+                        <div class="colormap-legend legend-diverging">
+                            <span>–</span><div class="legend-bar bar-diverging"></div><span>+</span>
+                        </div>
+                    </div>
+                    <div id="layer-pool" class="layer-box">
+                        <h4>MaxPool (post-ReLU)</h4>
+                        <div class="activation-map" id="pool-map"></div>
+                        <div class="colormap-legend legend-sequential">
+                            <span>0</span><div class="legend-bar bar-sequential"></div><span>max</span>
+                        </div>
+                    </div>
+                    <div id="layer-flatten" class="layer-box">
+                        <h4>Flatten</h4>
+                        <div id="flatten-values"></div>
+                    </div>
+                    <div id="layer-dense1" class="layer-box">
+                        <h4>Densa + ReLU + Dropout</h4>
+                        <div id="dense1-values"></div>
+                    </div>
+                    <div id="layer-output" class="layer-box">
+                        <h4>Softmax (4 clases)</h4>
+                        <div id="output-values"></div>
+                    </div>
+                </div>
+
+                <!-- Panel de predicciones (activo al terminar el entrenamiento) -->
+                <div id="predictions-panel" style="display:none"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/arch.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/optimizer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
