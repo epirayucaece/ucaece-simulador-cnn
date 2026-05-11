@@ -408,7 +408,7 @@ const UI = (function () {
 
             const grid = document.createElement('div');
             grid.className = 'kernel-grid';
-            grid.style.gridTemplateColumns = `repeat(${kSize}, 17px)`;
+            grid.style.gridTemplateColumns = `repeat(${kSize}, 23px)`;
 
             kernel.forEach(row => {
                 row.forEach(val => {
@@ -465,7 +465,7 @@ const UI = (function () {
 
             const grid = document.createElement('div');
             grid.className = 'pool-window-grid';
-            grid.style.gridTemplateColumns = `repeat(${W}, 16px)`;
+            grid.style.gridTemplateColumns = `repeat(${W}, 21px)`;
 
             for (let i = 0; i < H; i++) {
                 for (let j = 0; j < W; j++) {

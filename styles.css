@@ -598,12 +598,12 @@ button:active { transform: scale(0.98); }
 }
 
 .pool-window-cell {
-    width: 16px;
-    height: 16px;
+    width: 21px;
+    height: 21px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.35rem;
+    font-size: 0.56rem;
     font-family: monospace;
     font-weight: 600;
     border: 0.5px solid rgba(0,0,0,0.08);
@@ -740,12 +740,12 @@ button:active { transform: scale(0.98); }
 }
 
 .kernel-cell {
-    width: 17px;
-    height: 17px;
+    width: 23px;
+    height: 23px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.38rem;
+    font-size: 0.56rem;
     font-family: monospace;
     font-weight: 700;
     border: 0.5px solid rgba(0,0,0,0.08);
