@@ -58,6 +58,7 @@
                 <button id="btn-epoch">Ejecutar 1 época</button>
                 <button id="btn-run">Ejecutar todas</button>
                 <button id="btn-reset">Reiniciar</button>
+                <button id="btn-overview">ℹ Acerca de la simulación</button>
             </div>
             <section id="download-section" style="display:none;">
                 <button id="btn-download">Descargar explicación</button>
@@ -128,6 +129,82 @@
             </div>
         </section>
     </main>
+
+    <!-- Panel overview de la simulación -->
+    <div id="overview-overlay">
+        <div id="overview-card">
+            <button id="overview-close" title="Cerrar">✕</button>
+
+            <h2 class="ov-main-title">Esta simulación implementa una CNN</h2>
+
+            <div class="ov-section">
+                <h3>Dataset sintético</h3>
+                <p>40 imágenes de 8×8 píxeles con <strong>4 clases geométricas</strong>:
+                diagonales (↘ y ↗), banda horizontal y banda vertical.
+                Se agrega un <strong>5 % de ruido</strong> aleatorio por muestra para
+                simular variabilidad real. El conjunto se divide 80 % entrenamiento /
+                20 % prueba.</p>
+            </div>
+
+            <div class="ov-section">
+                <h3>Arquitectura de la red</h3>
+                <ul>
+                    <li><strong>Convolución 2D</strong> — filtros 3×3 aprendibles que
+                    detectan patrones espaciales en la imagen.</li>
+                    <li><strong>ReLU</strong> — activación no lineal que suprime valores
+                    negativos (max(0, z)).</li>
+                    <li><strong>MaxPooling 2×2</strong> — reduce la dimensionalidad a la
+                    mitad conservando las activaciones más fuertes.</li>
+                    <li><strong>Flatten</strong> — convierte el tensor 3D en un vector 1D
+                    para la capa densa.</li>
+                    <li><strong>Capa densa oculta + Dropout</strong> — combinación lineal
+                    seguida de ReLU; Dropout desactiva neuronas aleatoriamente durante el
+                    entrenamiento para regularizar.</li>
+                    <li><strong>Softmax</strong> — capa de salida que produce probabilidades
+                    para cada una de las 4 clases.</li>
+                </ul>
+            </div>
+
+            <div class="ov-grid">
+                <div class="ov-section">
+                    <h3>Optimizador — Adam</h3>
+                    <p>Implementado con momentos de <strong>primer y segundo orden</strong>,
+                    corrección de sesgo y épsilon para estabilidad numérica.
+                    Adapta la tasa de aprendizaje por parámetro a lo largo del
+                    entrenamiento.</p>
+                </div>
+                <div class="ov-section">
+                    <h3>Función de pérdida</h3>
+                    <p><strong>Entropía cruzada categórica</strong>, con gradiente
+                    integrado a Softmax. La forma resultante
+                    (p̂ − y) simplifica el cálculo de la retropropagación.</p>
+                </div>
+            </div>
+
+            <div class="ov-grid">
+                <div class="ov-section">
+                    <h3>Modo paso a paso</h3>
+                    <p>Permite detenerse en cada operación — convolución, ReLU, pooling,
+                    flatten, dense, softmax y retropropagación — para comprender el flujo
+                    de datos y gradientes en cada capa.</p>
+                </div>
+                <div class="ov-section">
+                    <h3>Modo automático</h3>
+                    <p>Avance continuo con velocidad configurable (0.8 s a 4 s por paso),
+                    pensado para que el estudiante pueda observar la evolución del
+                    entrenamiento sin intervención manual.</p>
+                </div>
+            </div>
+
+            <div class="ov-section ov-section-last">
+                <h3>Interactividad</h3>
+                <p>Los hiperparámetros (tasa de aprendizaje, épocas, tamaño de lote,
+                dropout, cantidad de filtros) pueden modificarse antes de cada ejecución.
+                La curva de pérdida y la precisión en prueba se actualizan al finalizar
+                cada época.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- Tooltip Flatten -->
     <div id="flatten-tooltip" class="info-tooltip">

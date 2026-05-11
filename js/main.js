@@ -22,8 +22,11 @@
     const btnRun      = document.getElementById('btn-run');
     const btnReset    = document.getElementById('btn-reset');
     const btnDownload = document.getElementById('btn-download');
-    const btnAutoPlay = document.getElementById('btn-auto-play');
-    const selSpeed    = document.getElementById('auto-speed');
+    const btnAutoPlay  = document.getElementById('btn-auto-play');
+    const selSpeed     = document.getElementById('auto-speed');
+    const btnOverview  = document.getElementById('btn-overview');
+    const ovOverlay    = document.getElementById('overview-overlay');
+    const ovClose      = document.getElementById('overview-close');
 
     // Estado de auto-ejecución
     let autoTimer    = null;
@@ -38,6 +41,11 @@
     btnReset.addEventListener('click', () => { stopAutoPlay(); resetSimulation(); });
     btnDownload.addEventListener('click', downloadExplanation);
     btnAutoPlay.addEventListener('click', toggleAutoPlay);
+
+    // Panel overview: abrir / cerrar
+    btnOverview.addEventListener('click', () => ovOverlay.classList.add('visible'));
+    ovClose.addEventListener('click',     () => ovOverlay.classList.remove('visible'));
+    ovOverlay.addEventListener('click',   e => { if (e.target === ovOverlay) ovOverlay.classList.remove('visible'); });
 
     // Cambio de velocidad mientras se ejecuta → reiniciar intervalo
     selSpeed.addEventListener('change', () => {
