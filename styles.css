@@ -327,6 +327,50 @@ button:active { transform: scale(0.98); }
     border-radius: 4px;
 }
 
+/* === ETIQUETAS DE INFORMACIÓN DE CAPA === */
+
+.layer-info-label {
+    font-size: 0.56rem;
+    color: #546e7a;
+    background: #eceff1;
+    border-radius: 3px;
+    padding: 2px 5px;
+    text-align: center;
+    line-height: 1.5;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.kernel-section-title {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: #78909c;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.kernel-grid {
+    display: inline-grid;
+    gap: 0;
+    border: 1px solid rgba(0,0,0,0.18);
+}
+
+.kernel-cell {
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.38rem;
+    font-family: monospace;
+    font-weight: 700;
+    border: 0.5px solid rgba(0,0,0,0.08);
+    box-sizing: border-box;
+    line-height: 1;
+}
+
 /* === CAPAS DE LA RED (fila inferior) === */
 
 #network-viz {
@@ -343,7 +387,7 @@ button:active { transform: scale(0.98); }
     flex-wrap: nowrap;
     gap: 0.5rem;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     align-items: flex-start;
     padding-bottom: 4px;
 }

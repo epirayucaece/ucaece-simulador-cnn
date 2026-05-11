@@ -80,13 +80,17 @@
                     </div>
                     <div id="layer-conv" class="layer-box">
                         <h4>Conv (pre-ReLU)</h4>
+                        <div class="layer-info-label" id="conv-info-label"></div>
                         <div class="activation-map" id="conv-map"></div>
                         <div class="colormap-legend legend-diverging">
                             <span>–</span><div class="legend-bar bar-diverging"></div><span>+</span>
                         </div>
+                        <div class="kernel-section-title">Kernels aprendidos (3×3)</div>
+                        <div class="activation-map" id="conv-kernels"></div>
                     </div>
                     <div id="layer-pool" class="layer-box">
                         <h4>MaxPool (post-ReLU)</h4>
+                        <div class="layer-info-label" id="pool-info-label"></div>
                         <div class="activation-map" id="pool-map"></div>
                         <div class="colormap-legend legend-sequential">
                             <span>0</span><div class="legend-bar bar-sequential"></div><span>max</span>

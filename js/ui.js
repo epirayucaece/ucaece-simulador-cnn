@@ -13,7 +13,10 @@ const UI = (function () {
         elements.batchHighlight  = document.getElementById('batch-highlight');
         elements.inputMap        = document.getElementById('input-map');
         elements.convMap         = document.getElementById('conv-map');
+        elements.convInfoLabel   = document.getElementById('conv-info-label');
+        elements.convKernels     = document.getElementById('conv-kernels');
         elements.poolMap         = document.getElementById('pool-map');
+        elements.poolInfoLabel   = document.getElementById('pool-info-label');
         elements.flattenValues   = document.getElementById('flatten-values');
         elements.dense1Values    = document.getElementById('dense1-values');
         elements.outputValues    = document.getElementById('output-values');
@@ -69,9 +72,12 @@ const UI = (function () {
     // ─── Limpieza de capas ────────────────────────────────────────────────────
 
     function clearLayerDisplays() {
-        elements.inputMap.innerHTML   = '';
-        elements.convMap.innerHTML    = '';
-        elements.poolMap.innerHTML    = '';
+        elements.inputMap.innerHTML      = '';
+        elements.convMap.innerHTML       = '';
+        elements.convInfoLabel.textContent = '';
+        elements.convKernels.innerHTML   = '';
+        elements.poolMap.innerHTML       = '';
+        elements.poolInfoLabel.textContent = '';
         elements.flattenValues.innerHTML = '';
         elements.dense1Values.innerHTML  = '';
         elements.outputValues.innerHTML  = '';
@@ -342,6 +348,67 @@ const UI = (function () {
         return card;
     }
 
+    // ─── Detalle capa convolucional ───────────────────────────────────────────
+
+    // Etiqueta estática con la arquitectura de la capa conv
+    function renderConvInfo(container, numFilters, kernelSize, inH, inW, outH, outW) {
+        container.textContent =
+            `${kernelSize}×${kernelSize} · stride 1 · padding válido` +
+            `  |  ${inH}×${inW} → ${outH}×${outW} · ${numFilters} filtro${numFilters > 1 ? 's' : ''}`;
+    }
+
+    // Muestra todos los kernels 3×3 como grids coloreados + valor numérico
+    // weights: [F][ci][kh][kw]  (ci = 1 para escala de grises)
+    function renderConvKernels(weights, container) {
+        container.innerHTML = '';
+        weights.forEach((kernelSet, f) => {
+            const kernel = kernelSet[0]; // canal único
+            const kSize  = kernel.length;
+
+            let absMax = 1e-6;
+            kernel.forEach(row => row.forEach(v => {
+                if (Math.abs(v) > absMax) absMax = Math.abs(v);
+            }));
+
+            const group = document.createElement('div');
+            group.className = 'filter-group';
+
+            const lbl = document.createElement('div');
+            lbl.className = 'filter-label';
+            lbl.textContent = `F${f + 1}`;
+            group.appendChild(lbl);
+
+            const grid = document.createElement('div');
+            grid.className = 'kernel-grid';
+            grid.style.gridTemplateColumns = `repeat(${kSize}, 17px)`;
+
+            kernel.forEach(row => {
+                row.forEach(val => {
+                    const cell = document.createElement('div');
+                    cell.className = 'kernel-cell';
+                    cell.style.backgroundColor = _pickColor(val, absMax, 'diverging');
+                    cell.textContent = val.toFixed(2);
+                    // texto claro sobre fondos saturados, oscuro sobre blanco
+                    cell.style.color = Math.abs(val) / absMax > 0.45
+                        ? 'rgba(255,255,255,0.92)'
+                        : 'rgba(0,0,0,0.72)';
+                    grid.appendChild(cell);
+                });
+            });
+
+            group.appendChild(grid);
+            container.appendChild(group);
+        });
+    }
+
+    // ─── Detalle capa de pooling ──────────────────────────────────────────────
+
+    function renderPoolInfo(container, inH, inW, inC, outH, outW) {
+        container.textContent =
+            `${inH}×${inW}×${inC} → ${outH}×${outW}×${inC}` +
+            `  |  ventana 2×2 · stride 2 · conserva el máximo de 4 valores`;
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     // mode: 'dataset' | 'pred'
@@ -363,6 +430,9 @@ const UI = (function () {
         renderDataset,
         clearLayerDisplays,
         renderFeatureMaps,
+        renderConvInfo,
+        renderConvKernels,
+        renderPoolInfo,
         render1DArray,
         updateStepDescription,
         updateStats,

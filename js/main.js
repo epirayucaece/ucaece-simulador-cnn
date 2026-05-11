@@ -236,19 +236,28 @@
             { scheme: 'binary' });
 
         // Convolución (PRE-ReLU) — colormap divergente azul↔rojo
-        // Rojo = respuesta positiva al filtro, Azul = respuesta negativa
         ArchDiagram.highlight('conv');
         const inp = [img];
         const convOut = model.conv.forward(inp);
         const convAbsMax = _absMax3D(convOut);
+        UI.renderConvInfo(
+            document.getElementById('conv-info-label'),
+            model.conv.numFilters, model.conv.kernelSize,
+            8, 8, convOut.length, convOut[0].length
+        );
         UI.renderFeatureMaps(convOut, document.getElementById('conv-map'),
             { scheme: 'diverging', absMax: convAbsMax });
+        UI.renderConvKernels(model.conv.weights, document.getElementById('conv-kernels'));
 
         // MaxPooling (POST-ReLU) — mismo absMax que conv para comparación directa
-        // Blanco = activación eliminada por ReLU (era negativa), Rojo = activación retenida
         ArchDiagram.highlight('pool');
         const reluOut = model.relu.forward(convOut);
         const poolOut = model.pool.forward(reluOut);
+        UI.renderPoolInfo(
+            document.getElementById('pool-info-label'),
+            reluOut.length, reluOut[0].length, reluOut[0][0].length,
+            poolOut.length, poolOut[0].length
+        );
         UI.renderFeatureMaps(poolOut, document.getElementById('pool-map'),
             { scheme: 'sequential', absMax: convAbsMax });
 
