@@ -146,6 +146,32 @@ button:active { transform: scale(0.98); }
     background: var(--accent);
 }
 
+#btn-auto-play {
+    background: #27ae60;
+}
+
+#btn-auto-play.btn-playing {
+    background: #e67e22;
+}
+
+/* Indicador de pulso cuando la auto-ejecución está activa */
+@keyframes auto-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.55); }
+    50%       { box-shadow: 0 0 0 5px rgba(230, 126, 34, 0); }
+}
+
+#btn-auto-play.btn-playing {
+    animation: auto-pulse 1.4s ease-in-out infinite;
+}
+
+.auto-speed-group select {
+    flex: 1;
+    font-size: 0.72rem;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
 #download-section {
     padding-top: 0.4rem;
 }

@@ -17,20 +17,55 @@
     let currentBatchSampleIdx = 0;
 
     // Botones
-    const btnStep = document.getElementById('btn-step');
-    const btnEpoch = document.getElementById('btn-epoch');
-    const btnRun = document.getElementById('btn-run');
-    const btnReset = document.getElementById('btn-reset');
+    const btnStep     = document.getElementById('btn-step');
+    const btnEpoch    = document.getElementById('btn-epoch');
+    const btnRun      = document.getElementById('btn-run');
+    const btnReset    = document.getElementById('btn-reset');
     const btnDownload = document.getElementById('btn-download');
+    const btnAutoPlay = document.getElementById('btn-auto-play');
+    const selSpeed    = document.getElementById('auto-speed');
+
+    // Estado de auto-ejecución
+    let autoTimer    = null;
+    let autoPlaying  = false;
 
     UI.init();
     resetSimulation();
 
-    btnStep.addEventListener('click', executeStep);
-    btnEpoch.addEventListener('click', executeOneEpoch);
-    btnRun.addEventListener('click', executeAll);
-    btnReset.addEventListener('click', resetSimulation);
+    btnStep.addEventListener('click',  () => { stopAutoPlay(); executeStep(); });
+    btnEpoch.addEventListener('click', () => { stopAutoPlay(); executeOneEpoch(); });
+    btnRun.addEventListener('click',   () => { stopAutoPlay(); executeAll(); });
+    btnReset.addEventListener('click', () => { stopAutoPlay(); resetSimulation(); });
     btnDownload.addEventListener('click', downloadExplanation);
+    btnAutoPlay.addEventListener('click', toggleAutoPlay);
+
+    // Cambio de velocidad mientras se ejecuta → reiniciar intervalo
+    selSpeed.addEventListener('change', () => {
+        if (autoPlaying) { stopAutoPlay(); startAutoPlay(); }
+    });
+
+    function toggleAutoPlay() {
+        autoPlaying ? stopAutoPlay() : startAutoPlay();
+    }
+
+    function startAutoPlay() {
+        if (autoPlaying || phase === 'done') return;
+        autoPlaying = true;
+        btnAutoPlay.textContent = '⏸ Pausar';
+        btnAutoPlay.classList.add('btn-playing');
+        const ms = parseInt(selSpeed.value, 10);
+        autoTimer = setInterval(() => {
+            if (phase === 'done') { stopAutoPlay(); return; }
+            executeStep();
+        }, ms);
+    }
+
+    function stopAutoPlay() {
+        if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+        autoPlaying = false;
+        btnAutoPlay.textContent = '▶ Auto-ejecutar';
+        btnAutoPlay.classList.remove('btn-playing');
+    }
 
     function resetSimulation() {
         phase = 'init';
