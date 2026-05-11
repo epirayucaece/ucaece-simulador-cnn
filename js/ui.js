@@ -499,15 +499,20 @@ const UI = (function () {
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    // Posiciona el tooltip cerca del cursor sin salirse de la ventana
+    // Posiciona el tooltip cerca del cursor sin salirse de la ventana.
+    // Primero intenta abajo-derecha; si no cabe, voltea en esa dirección.
+    // Finalmente aplica clamp para que tooltips muy altos nunca se salgan por arriba.
     function _positionTooltip(tooltip, e) {
         const gap = 14;
         const tw  = tooltip.offsetWidth  || 330;
-        const th  = tooltip.offsetHeight || 220;
+        const th  = tooltip.offsetHeight || 260;
         let left  = e.clientX + gap;
         let top   = e.clientY + gap;
         if (left + tw > window.innerWidth  - 8) left = e.clientX - tw - gap;
         if (top  + th > window.innerHeight - 8) top  = e.clientY - th - gap;
+        // Clamp final: garantiza que el tooltip nunca quede fuera del viewport
+        left = Math.max(8, Math.min(left, window.innerWidth  - tw - 8));
+        top  = Math.max(8, Math.min(top,  window.innerHeight - th - 8));
         tooltip.style.left = left + 'px';
         tooltip.style.top  = top  + 'px';
     }
