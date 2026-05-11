@@ -116,6 +116,36 @@
         </section>
     </main>
 
+    <!-- Tooltip filtros convolucionales -->
+    <div id="filter-tooltip">
+        <h3>¿Qué hace cada filtro?</h3>
+        <p>Cuando el filtro se desliza sobre la imagen 8×8 (stride&nbsp;1), en cada posición
+        calcula un <strong>producto punto</strong> entre sus 9&nbsp;pesos y los 9&nbsp;píxeles
+        que cubre. El resultado es un único número que indica qué tan presente está ese patrón
+        en esa zona. Al repetirlo para todas las posiciones se genera un
+        <strong>mapa de activación (feature map)</strong> de 6×6.</p>
+        <p>Con N&nbsp;filtros se obtienen N&nbsp;feature maps — cada uno es una
+        <strong>variante de la imagen filtrada</strong> que resalta un aspecto diferente.</p>
+
+        <h3>¿Qué detecta cada filtro en la simulación?</h3>
+        <p>Al inicio los pesos son aleatorios (inicialización&nbsp;He), pero durante el
+        entrenamiento cada filtro aprende a detectar algo útil para distinguir las
+        4&nbsp;clases. Por ejemplo:</p>
+        <ul>
+            <li>Un filtro que responde a <em>bordes diagonales</em></li>
+            <li>Otro que responde a <em>líneas horizontales</em></li>
+            <li>Otro a <em>cambios bruscos de contraste</em></li>
+        </ul>
+        <p>Eso es precisamente lo que muestran los kernels: al principio son "ruido" y con
+        cada época sus valores se ajustan hacia patrones con significado.</p>
+
+        <div class="tooltip-note">
+            <strong>La analogía clásica:</strong> es igual a aplicar filtros de Photoshop
+            (realce de bordes, suavizado, detección de contornos), pero en lugar de ser
+            diseñados a mano, la red los <em>aprende sola</em> a partir de los ejemplos.
+        </div>
+    </div>
+
     <script src="js/arch.js"></script>
     <script src="js/data.js"></script>
     <script src="js/network.js"></script>

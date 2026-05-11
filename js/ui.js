@@ -29,6 +29,12 @@ const UI = (function () {
         elements.layersView      = document.getElementById('layers-view');
         elements.predictionsPanel = document.getElementById('predictions-panel');
 
+        // Tooltip sobre cualquier kernel del contenedor de filtros convolucionales
+        const tooltip = document.getElementById('filter-tooltip');
+        elements.convKernels.addEventListener('mouseenter', () => tooltip.classList.add('visible'));
+        elements.convKernels.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+        elements.convKernels.addEventListener('mousemove',  e => _positionTooltip(tooltip, e));
+
         document.getElementById('lr').addEventListener('input',
             e => document.getElementById('lr-value').textContent = e.target.value);
         document.getElementById('epochs').addEventListener('input',
@@ -410,6 +416,19 @@ const UI = (function () {
     }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
+
+    // Posiciona el tooltip cerca del cursor sin salirse de la ventana
+    function _positionTooltip(tooltip, e) {
+        const gap = 14;
+        const tw  = tooltip.offsetWidth  || 330;
+        const th  = tooltip.offsetHeight || 220;
+        let left  = e.clientX + gap;
+        let top   = e.clientY + gap;
+        if (left + tw > window.innerWidth  - 8) left = e.clientX - tw - gap;
+        if (top  + th > window.innerHeight - 8) top  = e.clientY - th - gap;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top  = top  + 'px';
+    }
 
     // mode: 'dataset' | 'pred'
     function _makePixelGrid(img, mode) {
