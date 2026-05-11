@@ -17,6 +17,7 @@ const UI = (function () {
         elements.convKernels     = document.getElementById('conv-kernels');
         elements.poolMap         = document.getElementById('pool-map');
         elements.poolInfoLabel   = document.getElementById('pool-info-label');
+        elements.poolWindows     = document.getElementById('pool-windows');
         elements.flattenValues   = document.getElementById('flatten-values');
         elements.dense1Values    = document.getElementById('dense1-values');
         elements.outputValues    = document.getElementById('output-values');
@@ -29,11 +30,18 @@ const UI = (function () {
         elements.layersView      = document.getElementById('layers-view');
         elements.predictionsPanel = document.getElementById('predictions-panel');
 
-        // Tooltip sobre cualquier kernel del contenedor de filtros convolucionales
-        const tooltip = document.getElementById('filter-tooltip');
-        elements.convKernels.addEventListener('mouseenter', () => tooltip.classList.add('visible'));
-        elements.convKernels.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
-        elements.convKernels.addEventListener('mousemove',  e => _positionTooltip(tooltip, e));
+        // Tooltip filtros convolucionales
+        const convTip = document.getElementById('filter-tooltip');
+        elements.convKernels.addEventListener('mouseenter', () => convTip.classList.add('visible'));
+        elements.convKernels.addEventListener('mouseleave', () => convTip.classList.remove('visible'));
+        elements.convKernels.addEventListener('mousemove',  e => _positionTooltip(convTip, e));
+
+        // Tooltip MaxPooling — activo sobre el mapa de salida y las ventanas
+        const poolTip = document.getElementById('pool-tooltip');
+        const poolBox = document.getElementById('layer-pool');
+        poolBox.addEventListener('mouseenter', () => poolTip.classList.add('visible'));
+        poolBox.addEventListener('mouseleave', () => poolTip.classList.remove('visible'));
+        poolBox.addEventListener('mousemove',  e => _positionTooltip(poolTip, e));
 
         document.getElementById('lr').addEventListener('input',
             e => document.getElementById('lr-value').textContent = e.target.value);
@@ -84,6 +92,7 @@ const UI = (function () {
         elements.convKernels.innerHTML   = '';
         elements.poolMap.innerHTML       = '';
         elements.poolInfoLabel.textContent = '';
+        elements.poolWindows.innerHTML   = '';
         elements.flattenValues.innerHTML = '';
         elements.dense1Values.innerHTML  = '';
         elements.outputValues.innerHTML  = '';
@@ -415,6 +424,66 @@ const UI = (function () {
             `  |  ventana 2×2 · stride 2 · conserva el máximo de 4 valores`;
     }
 
+    // Muestra la entrada al MaxPool (post-ReLU) con las ventanas 2×2 delimitadas
+    // y el máximo de cada ventana resaltado con borde naranja.
+    // reluOut : [H][W][C]   switches : [C][outH][outW] = [maxI, maxJ]
+    function renderPoolWindows(reluOut, switches, container) {
+        container.innerHTML = '';
+        const H = reluOut.length, W = reluOut[0].length, C = reluOut[0][0].length;
+
+        for (let c = 0; c < C; c++) {
+            // Construir set de posiciones máximas para este canal
+            const maxSet = new Set();
+            switches[c].forEach(row => row.forEach(([mi, mj]) => maxSet.add(`${mi},${mj}`)));
+
+            // absMax del canal para normalizar colores
+            let absMax = 1e-6;
+            for (let i = 0; i < H; i++)
+                for (let j = 0; j < W; j++)
+                    if (reluOut[i][j][c] > absMax) absMax = reluOut[i][j][c];
+
+            const group = document.createElement('div');
+            group.className = 'filter-group';
+
+            const lbl = document.createElement('div');
+            lbl.className = 'filter-label';
+            lbl.textContent = `F${c + 1}`;
+            group.appendChild(lbl);
+
+            const grid = document.createElement('div');
+            grid.className = 'pool-window-grid';
+            grid.style.gridTemplateColumns = `repeat(${W}, 16px)`;
+
+            for (let i = 0; i < H; i++) {
+                for (let j = 0; j < W; j++) {
+                    const val   = reluOut[i][j][c];
+                    const isMax = maxSet.has(`${i},${j}`);
+
+                    // Separadores entre ventanas 2×2
+                    const rBorder = j % 2 === 1 && j < W - 1;
+                    const bBorder = i % 2 === 1 && i < H - 1;
+                    let cls = 'pool-window-cell';
+                    if (isMax)              cls += ' is-max';
+                    if (rBorder && bBorder) cls += ' win-border-rb';
+                    else if (rBorder)       cls += ' win-border-r';
+                    else if (bBorder)       cls += ' win-border-b';
+
+                    const cell = document.createElement('div');
+                    cell.className = cls;
+                    cell.style.backgroundColor = _pickColor(val, absMax, 'sequential');
+                    cell.textContent = val.toFixed(1);
+                    cell.style.color = val / absMax > 0.45
+                        ? 'rgba(255,255,255,0.92)'
+                        : 'rgba(0,0,0,0.65)';
+                    grid.appendChild(cell);
+                }
+            }
+
+            group.appendChild(grid);
+            container.appendChild(group);
+        }
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     // Posiciona el tooltip cerca del cursor sin salirse de la ventana
@@ -452,6 +521,7 @@ const UI = (function () {
         renderConvInfo,
         renderConvKernels,
         renderPoolInfo,
+        renderPoolWindows,
         render1DArray,
         updateStepDescription,
         updateStats,

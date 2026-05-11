@@ -95,6 +95,9 @@
                         <div class="colormap-legend legend-sequential">
                             <span>0</span><div class="legend-bar bar-sequential"></div><span>max</span>
                         </div>
+                        <div class="kernel-section-title">Ventanas 2×2 de entrada</div>
+                        <div class="pool-windows-legend"><span class="pool-max-swatch"></span>máximo seleccionado</div>
+                        <div class="activation-map" id="pool-windows"></div>
                     </div>
                     <div id="layer-flatten" class="layer-box">
                         <h4>Flatten</h4>
@@ -116,6 +119,44 @@
         </section>
     </main>
 
+    <!-- Tooltip MaxPooling -->
+    <div id="pool-tooltip">
+        <h3>¿Qué hace el MaxPooling?</h3>
+        <p>Divide cada feature map en <strong>ventanas de 2×2 píxeles</strong> y conserva
+        únicamente el valor máximo de cada ventana. Con stride&nbsp;2 las ventanas
+        no se solapan.</p>
+
+        <h3>Operación matemática</h3>
+        <p>Para cada canal c y ventana en posición (i,&nbsp;j):</p>
+        <div class="tooltip-formula">
+            output[i][j] = max( a&nbsp;&nbsp;b )<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( c&nbsp;&nbsp;d )
+        </div>
+        <p>donde a,&nbsp;b,&nbsp;c,&nbsp;d son los 4&nbsp;valores de la ventana 2×2.</p>
+
+        <h3>¿Por qué "achica" la imagen?</h3>
+        <p>Una entrada de 6×6 produce una salida de 3×3 — reduce las dimensiones
+        <strong>a la mitad</strong>. No es pérdida de información: el pooling actúa
+        como un <em>resumen</em>. Si el patrón aparece en algún lugar de la ventana,
+        el máximo lo captura.</p>
+
+        <h3>Rol real del pooling</h3>
+        <ul>
+            <li><strong>Invariancia a traslaciones:</strong> si el patrón se desplaza
+            1&nbsp;píxel, el máximo sigue siendo alto</li>
+            <li><strong>Reducción de parámetros:</strong> menos datos para las capas
+            siguientes</li>
+            <li><strong>Concentración de activaciones:</strong> solo sobreviven las
+            respuestas más intensas al filtro previo</li>
+        </ul>
+
+        <div class="tooltip-note">
+            En la sección <em>"Ventanas 2×2 de entrada"</em> podés ver exactamente
+            qué 4&nbsp;valores compiten en cada ventana y cuál gana
+            (recuadro <strong style="color:#f39c12">naranja</strong>).
+        </div>
+    </div>
+
     <!-- Tooltip filtros convolucionales -->
     <div id="filter-tooltip">
         <h3>¿Qué hace cada filtro?</h3>
@@ -128,7 +169,7 @@
         <strong>variante de la imagen filtrada</strong> que resalta un aspecto diferente.</p>
 
         <h3>¿Qué detecta cada filtro en la simulación?</h3>
-        <p>Al inicio los pesos son aleatorios (inicialización&nbsp;He), pero durante el
+        <p>Al inicio los pesos son aleatorios, pero durante el
         entrenamiento cada filtro aprende a detectar algo útil para distinguir las
         4&nbsp;clases. Por ejemplo:</p>
         <ul>

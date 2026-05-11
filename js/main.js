@@ -260,6 +260,7 @@
         );
         UI.renderFeatureMaps(poolOut, document.getElementById('pool-map'),
             { scheme: 'sequential', absMax: convAbsMax });
+        UI.renderPoolWindows(reluOut, model.pool.switches, document.getElementById('pool-windows'));
 
         // Flatten
         ArchDiagram.highlight('flatten');
